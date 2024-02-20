@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Valentino</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #555;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            text-align: center;
+            color: #e74c3c;
+        }
+
+        .section {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .heart {
+            color: #e74c3c;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #777;
+        }
+
+        .footer a {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Styling */
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 90%;
+            }
+        }
+
+ 	img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        input[type="email"] {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #c0392b;
+        }
+
+	.download-pdf {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .download-pdf:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Happy Valentine's Day!</h1>
+        
+        <div class="section portfolio">
+            <h2>Portfolio</h2>
+            <p>Explore our collection of romantic moments and experiences.</p>
+            <img src="img1.jpeg" alt="Description 2">
+            <p>Listen to "The Scientist" by Coldplay on <a href="https://open.spotify.com/track/75JFxkI2RXiU7L9VXzMkle" target="_blank">Spotify</a>.</p>
+        </div>
+
+        <div class="section memories">
+            <h2>Romantic Memories</h2>
+            <p>Cherish the beautiful memories you've created together.</p>
+            <img src="" alt="Description 3">
+            <!-- Add more images or content as needed -->
+        </div>
+
+        <div class="section dedication">
+            <h2>Love Dedication</h2>
+            <p>Express your love with a heartfelt dedication.</p>
+            <!-- Add dedication content here -->
+            <form action="mailto:tuoindirizzo@email.com" method="post" enctype="text/plain">
+                <label for="email">Send a love email:</label>
+                <input type="email" id="email" name="email" placeholder="Your email" required>
+                <input type="submit" value="Send Email">
+            </form>
+
+	<div class="footer">
+            <p>Created with <span class="heart">&#10084;</span> by <a href="https://www.example.com" target="_blank">Your Name</a></p>
+            <a class="download-pdf" href="regole_hoare.pdf" download>Download PDF</a>
+        </div>
+        </div>
+    </div>
+</body>
+</html>
