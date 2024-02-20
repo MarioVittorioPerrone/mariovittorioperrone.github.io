@@ -48,18 +48,19 @@
             height: 100%;
             object-fit: cover;
         }
-        header .left-image {
-            width: 30%;
-            overflow: hidden;
-            border-radius: 8px;
-            margin-right: 20px; /* Aggiunto margine destro */
-        }
+       header .left-image {
+    width: 30%;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-right: 20px; /* Aggiunto margine destro */
+    box-sizing: border-box; /* Aggiunta questa riga */
+}
 
-        header .left-image img {
-            width: 100%;
-            height: auto; /* Aggiunto per mantenere l'aspetto proporzionato */
-            object-fit: cover;
-        }
+header .left-image img {
+    width: 100%;
+    height: auto; /* Imposta l'altezza automaticamente in base alla larghezza, mantenendo la proporzione */
+    object-fit: cover; /* Imposta l'immagine per adattarsi completamente senza tagli */
+}
 
 
         header h1 {
@@ -248,7 +249,7 @@
 
         <div class="episode">
             <video controls>
-                <source src="cringe_video" type="video/mp4">
+                <source src="cringe_video.mp4" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="episode-details">
