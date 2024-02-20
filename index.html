@@ -1,147 +1,280 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>San Valentino</title>
+    <title>Podcast - One More Time</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #333;
+            background-color: #121212;
             color: #fff;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
+        header {
+            width: 100%;
+            height: 30vh;
+            position: relative;
+            background: #6016a2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 20px; /* Aggiunto spazio superiore */
+            box-sizing: border-box;
+        }
+
+        header .info-container {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            background: rgba(0, 0, 0, 0.5);
             padding: 20px;
-            background-color: #555;
+            box-sizing: border-box;
+        }
+
+        header .info-container .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px; /* Aggiunto margine destro */
+        }
+
+        header .info-container .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+header .left-image {
+    width: 30%;
+    height: 300px; /* Imposta l'altezza desiderata (300 pixel) */
+    overflow: hidden;
+    border-radius: 8px;
+    margin-right: 20px; /* Aggiunto margine destro */
+    box-sizing: border-box; /* Aggiunta questa riga */
+}
+
+header .left-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Imposta l'immagine per adattarsi completamente senza tagli */
+}
+
+
+
+
+
+
+        header h1 {
+            color: #fff;
+            margin: 5px 0;
+            font-size: 1.5em;
+            text-align: center; /* Centrato il testo */
+        }
+
+        header h2 {
+            color: #fff;
+            margin: 5px 0 0;
+            font-size: 1.2em;
+            text-align: center; /* Centrato il testo */
+        }
+
+        .combined-section {
+            background: linear-gradient(to bottom, #6016a2, #121212);
+            padding: 80px 20px 50px; /* Aggiunto spazio superiore e inferiore */
+            text-align: center;
+        }
+
+        .combined-section h2 {
+            color: #fff;
+            font-size: 2em;
+            margin-bottom: 20px; /* Aggiunto margine inferiore */
+        }
+
+        .episode-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .episode {
+            width: 70%;
+            margin-bottom: 20px;
+            background-color: #333;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
         }
 
-        h1 {
-            text-align: center;
-            color: #e74c3c;
+        .episode video {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 8px 8px 0 0;
         }
 
-        .section {
-            margin-top: 20px;
-            text-align: center;
+        .episode-details {
+            padding: 15px;
         }
 
-        .heart {
-            color: #e74c3c;
+        .episode h3 {
+            color: #6016a2;
+            margin: 0;
+            font-size: 1.2em;
         }
 
-        p {
-            font-size: 18px;
-            line-height: 1.6;
+        .episode p {
+            color: #fff;
+            font-size: 0.8em;
+            margin: 5px 0;
+        }
+
+        .play-button {
+            background-color: #6016a2;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .play-button:hover {
+            background-color: #400b66;
         }
 
         .footer {
-            margin-top: 40px;
+            background-color: #121212;
+            padding: 10px;
             text-align: center;
-            color: #777;
-        }
-
-        .footer a {
-            color: #e74c3c;
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive Styling */
-        @media screen and (max-width: 600px) {
-            .container {
-                width: 90%;
-            }
-        }
-
- 	img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-top: 10px;
+            bottom: 0;
         }
 
         form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-top: 20px;
-            text-align: center;
         }
 
         input[type="email"] {
-            padding: 8px;
-            width: 100%;
-            box-sizing: border-box;
+            padding: 10px;
             margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #6016a2;
+            width: 70%;
         }
 
         input[type="submit"] {
-            padding: 10px;
-            background-color: #e74c3c;
+            background-color: #6016a2;
             color: #fff;
             border: none;
+            padding: 10px;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+            width: 70%;
         }
 
         input[type="submit"]:hover {
-            background-color: #c0392b;
+            background-color: #400b66;
         }
 
-	.download-pdf {
-            display: block;
-            margin: 20px auto;
-            padding: 10px;
-            background-color: #3498db;
+        .pdf-download-button {
+            background-color: #6016a2;
             color: #fff;
-            text-align: center;
-            text-decoration: none;
+            border: none;
+            padding: 10px;
             border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            width: 70%;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            margin-left: auto; /* Centrato rispetto al blocco genitore */
+            margin-right: auto; /* Centrato rispetto al blocco genitore */
         }
 
-        .download-pdf:hover {
-            background-color: #2980b9;
+        .pdf-download-button:hover {
+            background-color: #400b66;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Happy Valentine's Day!</h1>
-        
-        <div class="section portfolio">
-            <h2>Portfolio</h2>
-            <p>Explore our collection of romantic moments and experiences.</p>
-            <img src="img1.jpeg" alt="Description 2">
-            <p>Listen to "The Scientist" by Coldplay on <a href="https://open.spotify.com/track/75JFxkI2RXiU7L9VXzMkle" target="_blank">Spotify</a>.</p>
+    <header>
+        <div class="info-container">
+            <div class="left-image">
+                <img src="foto.jpg" alt="Left Image">
+            </div>
+            <div class="logo">
+                <img src="fptp.jpg" alt="Podcast Logo">
+            </div>
+<br>
+            <h1>One More Time</h1>
+<br>
+            <h2>Exploring timeless music and unforgettable stories</h2>
+        </div>
+    </header>
+
+    <div class="combined-section">
+        <h2>About Us</h2>
+        <p>Learn more about the creators and the inspiration behind One More Time Podcast.</p>
+    </div>
+
+    <div class="episode-list">
+        <div class="episode">
+            <video controls>
+                <source src="episode1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="episode-details">
+                <h3>Episode 1: Timeless Classics</h3>
+                <p>Take a journey through the timeless classics that shaped the music industry.</p>
+                <button class="play-button">Play</button>
+            </div>
         </div>
 
-        <div class="section memories">
-            <h2>Romantic Memories</h2>
-            <p>Cherish the beautiful memories you've created together.</p>
-            <img src="" alt="Description 3">
-            <!-- Add more images or content as needed -->
+        <div class="episode">
+            <video controls>
+                <source src="episode2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="episode-details">
+                <h3>Episode 2: Unforgettable Moments</h3>
+                <p>Relive the unforgettable moments behind some of your favorite tracks.</p>
+                <button class="play-button">Play</button>
+            </div>
         </div>
 
-        <div class="section dedication">
-            <h2>Love Dedication</h2>
-            <p>Express your love with a heartfelt dedication.</p>
-            <!-- Add dedication content here -->
-            <form action="mailto:tuoindirizzo@email.com" method="post" enctype="text/plain">
-                <label for="email">Send a love email:</label>
-                <input type="email" id="email" name="email" placeholder="Your email" required>
-                <input type="submit" value="Send Email">
-            </form>
+        <div class="episode">
+            <video controls>
+                <source src="episode3.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="episode-details">
+                <h3>Episode 3: Melodies of the Past</h3>
+                <p>Discover the enchanting melodies that have stood the test of time.</p>
+                <button class="play-button">Play</button>
+            </div>
+        </div>
 
-	<div class="footer">
-            <p>Created with <span class="heart">&#10084;</span> by <a href="https://www.example.com" target="_blank">Your Name</a></p>
-            <a class="download-pdf" href="regole_hoare.pdf" download>Download PDF</a>
-        </div>
-        </div>
+        <!-- Add more video episodes as needed -->
+    </div>
+
+    <div class="footer">
+        <form>
+            <input type="email" placeholder="Your email address">
+            <input type="submit" value="Subscribe">
+        </form>
+        <a class="pdf-download-button" href="#" download="podcast.pdf">Download PDF</a>
+        <p>&copy; 2024 One More Time Podcast. All rights reserved.</p>
     </div>
 </body>
 </html>
