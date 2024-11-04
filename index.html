@@ -3,341 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Serie A Stats - Radar & Learning Curve</title>
-    <!-- Material Design CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css">
-    <!-- Chart.js library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- PapaParse per leggere CSV -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <style>
-        body {
-            background-color: #121212;
-            color: white; /* Testo bianco per la dark mode */
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+    <title>Statistiche Giocatori Serie A</title>
 
-        .container {
-            width: 100%;
-            padding: 0 10px;
+    <!-- Chart.js per i radar chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- PapaParse per leggere i CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <!-- Material Design Lite per lo stile moderno -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <style>
+        /* Personalizzazione del layout per renderlo responsive e moderno */
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding: 20px;
+            max-width: 800px;
             margin: auto;
         }
-
-        h1, h2 {
+        h1 {
             text-align: center;
-            color: #bb86fc;
+            font-size: 24px;
         }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background-color: #1f1f1f;
-            border-bottom: 1px solid #333;
+        #search-container {
+            margin: 20px auto;
+            text-align: center;
         }
-
-        .navbar a {
-            color: #bb86fc;
-            text-decoration: none;
-            padding: 10px 20px;
+        .mdl-textfield {
+            width: 100%;
+            max-width: 400px;
         }
-
-        .navbar a:hover {
-            background-color: #333;
-            border-radius: 5px;
-        }
-
-        .chart-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .chart-box {
-            width: 90%;
-            max-width: 500px; /* Limita la larghezza massima dei grafici */
-            margin: 10px;
-            background-color: #1f1f1f;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        }
-
         canvas {
-            width: 100% !important;
-            height: 250px !important; /* Altezza fissa per i grafici per evitare che siano troppo grandi */
+            margin-top: 40px;
         }
-
-        #playerInputs {
-            margin-top: 20px;
-            margin-bottom: 20px;
+        .no-data {
             text-align: center;
-        }
-
-        #addPlayerButton {
-            margin-left: 10px;
-        }
-
-        .player-selection {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        #playerSearch {
-            color: black;
-        }
-
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background-color: #1f1f1f;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            color: white; /* Testo bianco per la dark mode */
-            border-bottom: 1px solid #333;
-        }
-
-        th {
-            background-color: #333;
-        }
-
-        /* Responsiveness */
-        @media (max-width: 768px) {
-            .chart-box {
-                width: 100%;
-                margin: 10px 0;
-            }
-
-            canvas {
-                height: 200px !important; /* Altezza più piccola sui dispositivi mobili */
-            }
+            margin-top: 20px;
         }
     </style>
+
 </head>
 <body>
 
-    <!-- Barra di navigazione -->
-    <div class="navbar">
-        <a href="#">Serie A 2024/2025</a>
-        <a href="#">Stats</a>
-        <a href="#">Confronto Giocatori</a>
+    <h1>Statistiche Giocatori Serie A</h1>
+
+    <!-- Barra di ricerca per cercare i giocatori -->
+    <div id="search-container">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="playerSearch">
+            <label class="mdl-textfield__label" for="playerSearch">Cerca un giocatore...</label>
+        </div>
+        <button id="searchButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+            Cerca
+        </button>
     </div>
 
-    <!-- Titolo -->
-    <div class="container">
-        <h1>Analisi Statistiche dei Giocatori di Serie A</h1>
+    <!-- Radar chart per visualizzare le statistiche del giocatore -->
+    <canvas id="radarChart" width="400" height="400" style="display:none;"></canvas>
+    <p id="noDataMessage" class="no-data">Cerca un giocatore per visualizzare le statistiche</p>
 
-        <!-- Selezione dei giocatori -->
-        <div class="player-selection">
-            <div id="playerInputs">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" id="playerSearch" placeholder="Cerca Giocatore...">
-                </div>
-            </div>
-            <button id="addPlayerButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Aggiungi Giocatore</button>
-        </div>
-
-        <!-- Contenitori dei grafici -->
-        <div class="chart-container">
-            <div class="chart-box">
-                <h2>Radar Chart</h2>
-                <canvas id="radarChart"></canvas>
-            </div>
-            <div class="chart-box">
-                <h2>Curva di Apprendimento</h2>
-                <canvas id="lineChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Tabella dei dati -->
-        <div class="table-container">
-            <table id="statsTable">
-                <thead>
-                    <tr>
-                        <th>Giocatore</th>
-                        <th>Goal</th>
-                        <th>Assist</th>
-                        <th>Tiri</th>
-                        <th>Dribbling Riusciti</th>
-                        <th>Passaggi Riusciti</th>
-                        <th>Tackle</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- I dati della tabella saranno inseriti dinamicamente -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Script per gestire i grafici e i dati -->
     <script>
-        let playerCount = 0;
-        const maxPlayers = 5;
-        let playerData = {};
+        let playerData = [];
 
-        // Funzione per leggere il file CSV
-        function loadCSVData() {
-            Papa.parse('/mnt/data/player_stats_24-25_complete.csv', {
+        // Funzione per caricare il CSV
+        function loadCSV() {
+            Papa.parse('/data/player_stats_24-25_complete.csv', {
                 download: true,
                 header: true,
                 complete: function(results) {
-                    playerData = results.data.reduce((acc, player) => {
-                        acc[player.Nome] = {
-                            goal: parseInt(player.Goal) || 0,
-                            assist: parseInt(player.Assist) || 0,
-                            tiri: parseInt(player.Tiri) || 0,
-                            dribbling: parseInt(player['Dribbling Riusciti']) || 0,
-                            passaggi: parseInt(player['Passaggi Riusciti']) || 0,
-                            tackle: parseInt(player.Tackle) || 0
-                        };
-                        return acc;
-                    }, {});
+                    playerData = results.data;
                 }
             });
         }
 
-        // Carica i dati CSV al caricamento della pagina
-        document.addEventListener('DOMContentLoaded', loadCSVData);
-
-        // Funzione per creare il radar chart
-        function createRadarChart(playerData) {
-            const radarCtx = document.getElementById('radarChart').getContext('2d');
-            new Chart(radarCtx, {
-                type: 'radar',
-                data: {
-                    labels: ['Goal', 'Assist', 'Tiri', 'Dribbling Riusciti', 'Passaggi Riusciti', 'Tackle'],
-                    datasets: [{
-                        label: 'Statistiche Giocatore',
-                        data: [playerData.goal, playerData.assist, playerData.tiri, playerData.dribbling, playerData.passaggi, playerData.tackle],
-                        fill: true,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            ticks: {
-                                color: 'white',
-                                backdropColor: '#121212',
-                            },
-                            grid: {
-                                color: '#333',
-                            },
-                            pointLabels: {
-                                color: 'white'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'white'
-                            }
-                        }
-                    }
+        // Inizializzazione del radar chart
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        const radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Falli Subiti', 'Tackle'],
+                datasets: [{
+                    label: 'Statistiche Giocatore',
+                    data: [0, 0, 0, 0, 0, 0], // dati vuoti all'inizio
+                    backgroundColor: 'rgba(34, 202, 236, 0.2)',
+                    borderColor: 'rgba(34, 202, 236, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scale: {
+                    ticks: { beginAtZero: true }
                 }
-            });
-        }
-
-        // Funzione per creare il grafico a linee (learning curve)
-        function createLineChart(playerData) {
-            const lineCtx = document.getElementById('lineChart').getContext('2d');
-            new Chart(lineCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Goal', 'Assist', 'Tiri', 'Dribbling Riusciti', 'Passaggi Riusciti', 'Tackle'],
-                    datasets: [{
-                        label: 'Performance',
-                        data: [playerData.goal, playerData.assist, playerData.tiri, playerData.dribbling, playerData.passaggi, playerData.tackle],
-                        fill: false,
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: 'white'
-                            },
-                            grid: {
-                                color: '#333'
-                            }
-                        },
-                        y: {
-                            ticks: {
-                                color: 'white'
-                            },
-                            grid: {
-                                color: '#333'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'white'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Funzione per aggiornare la tabella con i dati del giocatore
-        function updateStatsTable(playerName, playerData) {
-            const tableBody = document.querySelector('#statsTable tbody');
-            const row = document.createElement('tr');
-
-            row.innerHTML = `
-                <td>${playerName}</td>
-                <td>${playerData.goal}</td>
-                <td>${playerData.assist}</td>
-                <td>${playerData.tiri}</td>
-                <td>${playerData.dribbling}</td>
-                <td>${playerData.passaggi}</td>
-                <td>${playerData.tackle}</td>
-            `;
-
-            tableBody.appendChild(row);
-        }
-
-        // Funzione per aggiungere un nuovo giocatore
-        document.getElementById('addPlayerButton').addEventListener('click', () => {
-            const playerSearch = document.getElementById('playerSearch').value;
-            if (playerData[playerSearch] && playerCount < maxPlayers) {
-                createRadarChart(playerData[playerSearch]);
-                createLineChart(playerData[playerSearch]);
-                updateStatsTable(playerSearch, playerData[playerSearch]);
-                playerCount++;
-            } else if (!playerData[playerSearch]) {
-                alert('Giocatore non trovato');
-            } else {
-                alert('Hai già aggiunto il numero massimo di giocatori per il confronto');
             }
         });
+
+        // Funzione per aggiornare il radar chart con i dati di un giocatore
+        function updateChart(playerStats) {
+            radarChart.data.datasets[0].data = [
+                parseInt(playerStats['Goal']) || 0, 
+                parseInt(playerStats['Ass']) || 0, 
+                parseInt(playerStats['Tiri']) || 0, 
+                parseInt(playerStats['Dribb Riusciti']) || 0, 
+                parseInt(playerStats['Pass Riusciti']) || 0, 
+                parseInt(playerStats['Falli Subiti']) || 0, 
+                parseInt(playerStats['Tackle']) || 0
+            ];
+            radarChart.update();
+        }
+
+        // Funzione per cercare un giocatore
+        function searchPlayer() {
+            const playerName = document.getElementById('playerSearch').value;
+            const playerStats = playerData.find(player => player['Giocatore'].toLowerCase() === playerName.toLowerCase());
+
+            if (playerStats) {
+                document.getElementById('radarChart').style.display = 'block';
+                document.getElementById('noDataMessage').style.display = 'none';
+                updateChart(playerStats);
+            } else {
+                document.getElementById('radarChart').style.display = 'none';
+                document.getElementById('noDataMessage').style.display = 'block';
+                document.getElementById('noDataMessage').textContent = 'Giocatore non trovato';
+            }
+        }
+
+        // Aggiunge il listener al pulsante di ricerca
+        document.getElementById('searchButton').addEventListener('click', searchPlayer);
+
+        // Carica il CSV al caricamento della pagina
+        loadCSV();
+
     </script>
 
 </body>
