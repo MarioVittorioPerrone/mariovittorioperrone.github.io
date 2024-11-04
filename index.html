@@ -5,29 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistiche Giocatori Serie A</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
 
     <h1>Seleziona un Giocatore</h1>
     <!-- Menu a tendina per scegliere il giocatore -->
     <select id="playerSelect">
-        <!-- Le opzioni verranno popolate dinamicamente -->
+        <option value="">Seleziona un giocatore</option>
     </select>
 
     <!-- Radar chart per visualizzare le statistiche del giocatore -->
     <canvas id="radarChart" width="400" height="400"></canvas>
 
     <script>
-        // Funzione per popolare il menu a tendina con i nomi dei giocatori
-        const playerNames = ['M. Thuram', 'M. Retegui', 'C. Pulisic', 'G. Di Lorenzo', 'K. Kvaratskhelia'];
-        const playerSelect = document.getElementById('playerSelect');
+        let playerData = [];
 
-        playerNames.forEach(player => {
-            const option = document.createElement('option');
-            option.value = player;
-            option.text = player;
-            playerSelect.appendChild(option);
-        });
+        // Funzione per caricare il CSV e popolare il menu a tendina
+        function loadCSV() {
+            Papa.parse('/data/player_stats_24-25_complete.csv', {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    playerData = results.data;
+                    populatePlayerSelect(playerData);
+                }
+            });
+        }
+
+        // Funzione per popolare il menu a tendina con i nomi dei giocatori
+        function populatePlayerSelect(data) {
+            const playerSelect = document.getElementById('playerSelect');
+            data.forEach(player => {
+                const option = document.createElement('option');
+                option.value = player['Giocatore'];
+                option.text = player['Giocatore'];
+                playerSelect.appendChild(option);
+            });
+        }
 
         // Inizializzazione del radar chart
         const ctx = document.getElementById('radarChart').getContext('2d');
@@ -53,37 +68,27 @@
         // Funzione per aggiornare il radar chart con i dati di un giocatore
         function updateChart(playerStats) {
             radarChart.data.datasets[0].data = [
-                playerStats.Goal, 
-                playerStats.Ass, 
-                playerStats.Tiri, 
-                playerStats['Dribb Riusciti'], 
-                playerStats['Pass Riusciti'], 
-                playerStats.Tackle
+                parseInt(playerStats['Goal']) || 0, 
+                parseInt(playerStats['Ass']) || 0, 
+                parseInt(playerStats['Tiri']) || 0, 
+                parseInt(playerStats['Dribb Riusciti']) || 0, 
+                parseInt(playerStats['Pass Riusciti']) || 0, 
+                parseInt(playerStats['Tackle']) || 0
             ];
             radarChart.update();
         }
 
-        // Funzione per ottenere i dati di un giocatore dal server
-        function getPlayerData(playerName) {
-            fetch(`/api/player/${encodeURIComponent(playerName)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.error) {
-                        updateChart(data);
-                    } else {
-                        alert('Giocatore non trovato');
-                    }
-                });
-        }
-
-        // Quando viene selezionato un giocatore, invia la richiesta al server
-        playerSelect.addEventListener('change', (event) => {
+        // Quando viene selezionato un giocatore, aggiorna il grafico
+        document.getElementById('playerSelect').addEventListener('change', function(event) {
             const selectedPlayer = event.target.value;
-            getPlayerData(selectedPlayer);
+            const playerStats = playerData.find(player => player['Giocatore'] === selectedPlayer);
+            if (playerStats) {
+                updateChart(playerStats);
+            }
         });
 
-        // Carichiamo i dati per il primo giocatore al caricamento della pagina
-        getPlayerData(playerNames[0]);
+        // Carica il CSV al caricamento della pagina
+        loadCSV();
 
     </script>
 
