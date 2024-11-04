@@ -1,274 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raquelita Podcast</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #121212;
-            color: #fff;
-        }
-
-        header {
-            width: 100%;
-            height: 30vh;
-            position: relative;
-            background: #6016a2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 40px 20px; /* Aggiunto spazio superiore */
-            box-sizing: border-box;
-        }
-
-        header .info-container {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        header .info-container .logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 20px; /* Aggiunto margine destro */
-        }
-
-        header .info-container .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-       header .left-image {
-    width: 30%;
-    overflow: hidden;
-    border-radius: 8px;
-    margin-right: 20px; /* Aggiunto margine destro */
-    box-sizing: border-box; /* Aggiunta questa riga */
-}
-
-header .left-image img {
-    width: 100%;
-    height: auto; /* Imposta l'altezza automaticamente in base alla larghezza, mantenendo la proporzione */
-    object-fit: cover; /* Imposta l'immagine per adattarsi completamente senza tagli */
-}
-
-
-        header h1 {
-            color: #fff;
-            margin: 5px 0;
-            font-size: 1.5em;
-            text-align: center; /* Centrato il testo */
-        }
-
-        header h2 {
-            color: #fff;
-            margin: 5px 0 0;
-            font-size: 1.2em;
-            text-align: center; /* Centrato il testo */
-        }
-
-        .combined-section {
-            background: linear-gradient(to bottom, #6016a2, #121212);
-            padding: 80px 20px 50px; /* Aggiunto spazio superiore e inferiore */
-            text-align: center;
-        }
-
-        .combined-section h2 {
-            color: #fff;
-            font-size: 2em;
-            margin-bottom: 20px; /* Aggiunto margine inferiore */
-        }
-
-        .episode-list {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .episode {
-            width: 70%;
-            margin-bottom: 20px;
-            background-color: #333;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .episode video {
-            width: 100%;
-            max-height: 300px;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .episode-details {
-            padding: 15px;
-        }
-
-        .episode h3 {
-            color: #6016a2;
-            margin: 0;
-            font-size: 1.2em;
-        }
-
-        .episode p {
-            color: #fff;
-            font-size: 0.8em;
-            margin: 5px 0;
-        }
-
-        .play-button {
-            background-color: #6016a2;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease;
-        }
-
-        .play-button:hover {
-            background-color: #400b66;
-        }
-
-        .footer {
-            background-color: #121212;
-            padding: 10px;
-            text-align: center;
-            bottom: 0;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        input[type="email"] {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #6016a2;
-            width: 70%;
-        }
-
-        input[type="submit"] {
-            background-color: #6016a2;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease;
-            width: 70%;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #400b66;
-        }
-
-        .pdf-download-button {
-            background-color: #6016a2;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            margin-top: 10px;
-            transition: background-color 0.3s ease;
-            width: 70%;
-            text-decoration: none;
-            text-align: center;
-            display: block;
-            margin-left: auto; /* Centrato rispetto al blocco genitore */
-            margin-right: auto; /* Centrato rispetto al blocco genitore */
-        }
-
-        .pdf-download-button:hover {
-            background-color: #400b66;
-        }
-    </style>
+    <title>Statistiche Giocatori Serie A</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <header>
-        <div class="info-container">
-            <div class="left-image">
-                <img src="foto.jpg" alt="Left Image">
-            </div>
-<!--             <div class="logo">
-                <img src="fptp.jpg" alt="Podcast Logo">
-            </div> -->
-           <h1>Raquel Love Storie</h1>
-            <h2>todo lo que necesitas saber sobre la vida amorosa de Raquelita. </h2>
-        </div>
-    </header>
 
-    <div class="combined-section">
-        <h2>About Raquel</h2>
-        <p>Ansiosa, paranoica y llena de masturbación mental. Pero raquel no es sólo eso. Y lo descubriremos juntos en este viaje único a su mundo que gira en torno a su novio perfecto, que alegra cada dia su vida y sus dias.</p>
-    </div>
+    <h1>Seleziona un Giocatore</h1>
+    <!-- Menu a tendina per scegliere il giocatore -->
+    <select id="playerSelect">
+        <!-- Le opzioni verranno popolate dinamicamente -->
+    </select>
 
-    <div class="episode-list">
-        <div class="episode">
-            <video controls>
-                <source src="iphone_video.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="episode-details">
-                <h3>Episodio 1: un viaje que duró más de un año (casi dos)</h3>
-                <p>Raquel lleva oficialmente un año con su novio, pero lejos de los focos lo suyo es una pasión tremenda que lleva casi dos años. 
-                    Todavia, este año que pasamos juntos ha sido sin duda especial, visitando diferentes países y ciudades y viviendo la vida en el verdadero sentido de la palabra</p>
-                <button class="play-button">Play</button>
-            </div>
-        </div>
+    <!-- Radar chart per visualizzare le statistiche del giocatore -->
+    <canvas id="radarChart" width="400" height="400"></canvas>
 
-        <div class="episode">
-            <video controls>
-                <source src="ball_video.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="episode-details">
-                <h3>Episodio 2: que se debe evitar</h3>
-                <p>Es difícil decir si este año puede ser incluso mejor que el pasado, pero al menos podemos esperar que sea mejor que esta triste escena.</p>
-                <button class="play-button">Play</button>
-            </div>
-        </div>
+    <script>
+        // Funzione per popolare il menu a tendina con i nomi dei giocatori
+        const playerNames = ['M. Thuram', 'M. Retegui', 'C. Pulisic', 'G. Di Lorenzo', 'K. Kvaratskhelia'];
+        const playerSelect = document.getElementById('playerSelect');
 
-        <div class="episode">
-            <video controls>
-                <source src="cringe_video.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="episode-details">
-                <h3>Episodio 3 - Bonus: un breve viaje donde analizamos los momentos en los que Raquelita mostró diferentes habilidades</h3>
-                <p>Esperemos ver más de ellos y al mismo tiempo navegar menos por la vergüenza.</p>
-                <button class="play-button">Play</button>
-            </div>
-        </div>
+        playerNames.forEach(player => {
+            const option = document.createElement('option');
+            option.value = player;
+            option.text = player;
+            playerSelect.appendChild(option);
+        });
 
-        <!-- Add more video episodes as needed -->
-    </div>
+        // Inizializzazione del radar chart
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        const radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'],
+                datasets: [{
+                    label: 'Statistiche Giocatore',
+                    data: [0, 0, 0, 0, 0, 0], // dati vuoti all'inizio
+                    backgroundColor: 'rgba(34, 202, 236, 0.2)',
+                    borderColor: 'rgba(34, 202, 236, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scale: {
+                    ticks: { beginAtZero: true }
+                }
+            }
+        });
 
-    <div class="footer">
-        <form>
-            <input type="email" placeholder="Scrivi qui la tua email bellezza">
-            <input type="submit" value="candidatas como proxima novia!">
-        </form>
-        <a class="pdf-download-button" href="lettera.pdf" download="lettera.pdf">clicca qua che è meglio raquelita</a>
-        <p>&copy; 2024 Raquel Podcast. All rights reserved. Sottotitoli palesemente con il traduttore</p>
-    </div>
+        // Funzione per aggiornare il radar chart con i dati di un giocatore
+        function updateChart(playerStats) {
+            radarChart.data.datasets[0].data = [
+                playerStats.Goal, 
+                playerStats.Ass, 
+                playerStats.Tiri, 
+                playerStats['Dribb Riusciti'], 
+                playerStats['Pass Riusciti'], 
+                playerStats.Tackle
+            ];
+            radarChart.update();
+        }
+
+        // Funzione per ottenere i dati di un giocatore dal server
+        function getPlayerData(playerName) {
+            fetch(`/api/player/${encodeURIComponent(playerName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        updateChart(data);
+                    } else {
+                        alert('Giocatore non trovato');
+                    }
+                });
+        }
+
+        // Quando viene selezionato un giocatore, invia la richiesta al server
+        playerSelect.addEventListener('change', (event) => {
+            const selectedPlayer = event.target.value;
+            getPlayerData(selectedPlayer);
+        });
+
+        // Carichiamo i dati per il primo giocatore al caricamento della pagina
+        getPlayerData(playerNames[0]);
+
+    </script>
+
 </body>
 </html>
