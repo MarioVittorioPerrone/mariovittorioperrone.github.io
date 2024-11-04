@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistiche Giocatori Serie A</title>
 
-    <!-- Chart.js per i radar chart -->
     <!-- Chart.js per i radar chart e grafici a linea -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- PapaParse per leggere i CSV -->
@@ -15,46 +14,50 @@
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
     <style>
-        /* Personalizzazione del layout per renderlo responsive e moderno */
         /* Dark Mode */
         body {
             font-family: 'Roboto', sans-serif;
             padding: 20px;
-            max-width: 800px;
             max-width: 900px;
             margin: auto;
             background-color: #121212;
             color: white;
         }
+
         .light-mode {
             background-color: white;
             color: black;
         }
+
         h1 {
             text-align: center;
             font-size: 24px;
         }
+
         #search-container {
             margin: 20px auto;
             text-align: center;
         }
+
         .mdl-textfield {
             width: 100%;
             max-width: 400px;
         }
+
         canvas {
             margin-top: 40px;
         }
+
         .no-data {
             text-align: center;
             margin-top: 20px;
         }
-    </style>
 
         #chart-toggle {
             margin-top: 20px;
             text-align: center;
         }
+
         .toggle-button {
             margin-right: 20px;
         }
@@ -64,7 +67,6 @@
 
     <h1>Statistiche Giocatori Serie A</h1>
 
-    <!-- Barra di ricerca per cercare i giocatori -->
     <!-- Dark mode switch -->
     <div style="text-align: right;">
         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="darkModeSwitch">
@@ -72,11 +74,10 @@
             <span class="mdl-switch__label">Dark Mode</span>
         </label>
     </div>
+
     <!-- Barra di ricerca per il confronto di due giocatori -->
     <div id="search-container">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="playerSearch">
-            <label class="mdl-textfield__label" for="playerSearch">Cerca un giocatore...</label>
             <input class="mdl-textfield__input" type="text" id="playerSearch1">
             <label class="mdl-textfield__label" for="playerSearch1">Giocatore 1...</label>
         </div>
@@ -84,24 +85,23 @@
             <input class="mdl-textfield__input" type="text" id="playerSearch2">
             <label class="mdl-textfield__label" for="playerSearch2">Giocatore 2...</label>
         </div>
-        <button id="searchButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
-            Cerca
         <button id="compareButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
             Confronta
         </button>
     </div>
 
-    <!-- Radar chart per visualizzare le statistiche del giocatore -->
     <!-- Toggle tra radar chart e curva di apprendimento -->
     <div id="chart-toggle">
         <button id="radarToggle" class="mdl-button mdl-js-button mdl-button--raised toggle-button">Radar Chart</button>
         <button id="lineToggle" class="mdl-button mdl-js-button mdl-button--raised toggle-button">Curva di Apprendimento</button>
     </div>
+
     <!-- Radar chart per visualizzare le statistiche dei giocatori -->
     <canvas id="radarChart" width="400" height="400" style="display:none;"></canvas>
-    <p id="noDataMessage" class="no-data">Cerca un giocatore per visualizzare le statistiche</p>
+
     <!-- Line chart (curva di apprendimento) -->
     <canvas id="lineChart" width="400" height="400" style="display:none;"></canvas>
+
     <p id="noDataMessage" class="no-data">Cerca due giocatori per confrontare le statistiche</p>
 
     <script>
@@ -121,21 +121,12 @@
         // Radar chart e Line chart context
         const radarCtx = document.getElementById('radarChart').getContext('2d');
         const lineCtx = document.getElementById('lineChart').getContext('2d');
+
         // Inizializzazione del radar chart
-        const ctx = document.getElementById('radarChart').getContext('2d');
-        const radarChart = new Chart(ctx, {
         const radarChart = new Chart(radarCtx, {
             type: 'radar',
             data: {
-                labels: ['Goal', 'Assist', 'Tiri Porta', 'Dribbling', 'Falli Subiti', 'Tackle'],
-                datasets: [{
-                    label: 'Statistiche Giocatore',
-                    data: [0, 0, 0, 0, 0, 0], // dati vuoti all'inizio
-                    backgroundColor: 'rgba(34, 202, 236, 0.2)',
-                    borderColor: 'rgba(34, 202, 236, 1)',
-                    borderWidth: 1
-                }]
-                labels: ['Goal', 'Assist', 'Tiri Porta', 'Dribbling', 'Falli Subiti', 'Tackle'],
+                labels: ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'],
                 datasets: []
             },
             options: {
@@ -145,20 +136,11 @@
             }
         });
 
-        // Funzione per aggiornare il radar chart con i dati di un giocatore
-        function updateChart(playerStats) {
-            radarChart.data.datasets[0].data = [
-                parseInt(playerStats['Goal']) || 0, 
-                parseInt(playerStats['Ass']) || 0, 
-                parseInt(playerStats['Tiri Porta']) || 0, 
-                parseInt(playerStats['Dribb Riusciti']) || 0, 
-                parseInt(playerStats['Falli Subiti']) || 0, 
-                parseInt(playerStats['Tackle']) || 0
         // Inizializzazione del line chart
         const lineChart = new Chart(lineCtx, {
             type: 'line',
             data: {
-                labels: ['Goal', 'Assist', 'Tiri Porta', 'Dribbling', 'Falli Subiti', 'Tackle'],
+                labels: ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'],
                 datasets: []
             },
             options: {
@@ -167,25 +149,29 @@
                 }
             }
         });
+
         // Funzione per aggiornare i grafici con i dati di due giocatori
         function updateCharts(player1Stats, player2Stats) {
-            const labels = ['Goal', 'Assist', 'Tiri Porta', 'Dribbling', 'Falli Subiti', 'Tackle'];
+            const labels = ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'];
+
             const player1Data = [
                 parseInt(player1Stats['Goal']) || 0, 
                 parseInt(player1Stats['Ass']) || 0, 
-                parseInt(player1Stats['Tiri Porta']) || 0, 
+                parseInt(player1Stats['Tiri']) || 0, 
                 parseInt(player1Stats['Dribb Riusciti']) || 0, 
-                parseInt(player1Stats['Falli Subiti']) || 0, 
+                parseInt(player1Stats['Pass Riusciti']) || 0, 
                 parseInt(player1Stats['Tackle']) || 0
             ];
+
             const player2Data = [
                 parseInt(player2Stats['Goal']) || 0, 
                 parseInt(player2Stats['Ass']) || 0, 
-                parseInt(player2Stats['Tiri Porta']) || 0, 
+                parseInt(player2Stats['Tiri']) || 0, 
                 parseInt(player2Stats['Dribb Riusciti']) || 0, 
-                parseInt(player2Stats['Falli Subiti']) || 0, 
+                parseInt(player2Stats['Pass Riusciti']) || 0, 
                 parseInt(player2Stats['Tackle']) || 0
             ];
+
             // Aggiorna il radar chart
             radarChart.data.datasets = [
                 {
@@ -204,6 +190,7 @@
                 }
             ];
             radarChart.update();
+
             // Aggiorna il line chart
             lineChart.data.datasets = [
                 {
@@ -222,44 +209,32 @@
             lineChart.update();
         }
 
-        // Funzione per cercare un giocatore
-        function searchPlayer() {
-            const playerName = document.getElementById('playerSearch').value;
-            const playerStats = playerData.find(player => player['Giocatore'].toLowerCase() === playerName.toLowerCase());
         // Funzione per cercare i giocatori
         function searchPlayers() {
             const playerName1 = document.getElementById('playerSearch1').value;
             const playerName2 = document.getElementById('playerSearch2').value;
 
-            if (playerStats) {
-                document.getElementById('radarChart').style.display = 'block';
             const player1Stats = playerData.find(player => player['Giocatore'].toLowerCase() === playerName1.toLowerCase());
             const player2Stats = playerData.find(player => player['Giocatore'].toLowerCase() === playerName2.toLowerCase());
+
             if (player1Stats && player2Stats) {
                 document.getElementById('noDataMessage').style.display = 'none';
-                updateChart(playerStats);
                 document.getElementById('radarChart').style.display = 'block';
                 document.getElementById('lineChart').style.display = 'none';
                 updateCharts(player1Stats, player2Stats);
             } else {
-                document.getElementById('radarChart').style.display = 'none';
-                document.getElementById('noDataMessage').style.display = 'block';
-                document.getElementById('noDataMessage').textContent = 'Giocatore non trovato';
                 document.getElementById('noDataMessage').textContent = "Giocatori non trovati";
             }
         }
 
-        // Aggiunge il listener al pulsante di ricerca
-        document.getElementById('searchButton').addEventListener('click', searchPlayer);
         // Funzione per il toggle della dark mode
         function toggleDarkMode() {
             document.body.classList.toggle('light-mode');
         }
+
         // Event listener per il pulsante "Confronta"
         document.getElementById('compareButton').addEventListener('click', searchPlayers);
 
-        // Carica il CSV al caricamento della pagina
-        loadCSV();
         // Event listener per il toggle dei grafici
         document.getElementById('radarToggle').addEventListener('click', function() {
             document.getElementById('radarChart').style.display = 'block';
@@ -270,7 +245,6 @@
             document.getElementById('lineChart').style.display = 'block';
         });
 
-    </script>
         // Event listener per il dark mode switch
         document.getElementById('darkModeSwitch').addEventListener('change', toggleDarkMode);
 
