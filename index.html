@@ -1,75 +1,111 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analisi Giocatori Serie A</title>
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            ticks: {
+                                color: 'white',
+                                backdropColor: '#121212',
+                            },
+                            grid: {
+                                color: '#333',
+                            },
+                            pointLabels: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
-    <!-- Material Design Lite per lo stile moderno -->
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        // Funzione per creare il grafico a linee (learning curve)
+        function createLineChart(playerData) {
+            const lineCtx = document.getElementById('lineChart').getContext('2d');
+            new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Goal', 'Assist', 'Tiri', 'Dribbling Riusciti', 'Passaggi Riusciti', 'Tackle'],
+                    datasets: [{
+                        label: 'Curva Apprendimento Giocatore',
+                        data: [playerData.goal, playerData.assist, playerData.tiri, playerData.dribbling, playerData.passaggi, playerData.tackle],
+                        fill: false,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: '#333'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: '#333'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
 
-    <!-- Chart.js per i radar chart e grafici a linea -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- PapaParse per leggere i CSV -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+        // Funzione per aggiornare la tabella con i dati del giocatore
+        function updateStatsTable(playerName, playerData) {
+            const tableBody = document.querySelector('#statsTable tbody');
+            const row = document.createElement('tr');
 
-    <!-- Stile personalizzato -->
-    <link rel="stylesheet" href="styles.css">
+            row.innerHTML = `
+                <td>${playerName}</td>
+                <td>${playerData.goal}</td>
+                <td>${playerData.assist}</td>
+                <td>${playerData.tiri}</td>
+                <td>${playerData.dribbling}</td>
+                <td>${playerData.passaggi}</td>
+                <td>${playerData.tackle}</td>
+            `;
 
-</head>
-<body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
-        <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title">Menu</span>
-            <nav class="mdl-navigation">
-                <a class="mdl-navigation__link" id="singlePlayerLink" href="#">Analisi singolo giocatore</a>
-                <a class="mdl-navigation__link" id="multiPlayerLink" href="#">Confronto giocatori</a>
-            </nav>
-        </div>
+            tableBody.appendChild(row);
+        }
 
-        <main class="mdl-layout__content">
-            <div class="page-content">
-                
-                <!-- Sezione Analisi Singolo Giocatore -->
-                <section id="singlePlayerSection" style="display: none;">
-                    <h2>Analisi singolo giocatore</h2>
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input class="mdl-textfield__input" type="text" id="singlePlayerSearch">
-                        <label class="mdl-textfield__label" for="singlePlayerSearch">Cerca Giocatore...</label>
-                    </div>
-                    <button id="analyzeSinglePlayerButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
-                        Analizza
-                    </button>
+        // Funzione per aggiungere un nuovo giocatore
+        document.getElementById('addPlayerButton').addEventListener('click', () => {
+            const playerSearch = document.getElementById('playerSearch').value;
+            if (playersData[playerSearch] && playerCount < maxPlayers) {
+                createRadarChart(playersData[playerSearch]);
+                createLineChart(playersData[playerSearch]);
+                updateStatsTable(playerSearch, playersData[playerSearch]);
+                playerCount++;
+            } else if (!playersData[playerSearch]) {
+                alert('Giocatore non trovato');
+            } else {
+                alert('Hai già aggiunto il numero massimo di giocatori per il confronto');
+            }
+        });
+    </script>
 
-                    <canvas id="singlePlayerRadarChart" width="400" height="400" style="display:none;"></canvas>
-                    <canvas id="singlePlayerLineChart" width="400" height="400" style="display:none;"></canvas>
-                </section>
-
-                <!-- Sezione Confronto Giocatori -->
-                <section id="multiPlayerSection" style="display: none;">
-                    <h2>Confronto giocatori (fino a 5)</h2>
-                    <div id="playerInputs">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="playerSearch1">
-                            <label class="mdl-textfield__label" for="playerSearch1">Giocatore 1...</label>
-                        </div>
-                    </div>
-                    <button id="addPlayerButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-                        <i class="material-icons">add</i>
-                    </button>
-                    <button id="comparePlayersButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
-                        Confronta
-                    </button>
-
-                    <canvas id="multiPlayerRadarChart" width="400" height="400" style="display:none;"></canvas>
-                    <canvas id="multiPlayerLineChart" width="400" height="400" style="display:none;"></canvas>
-                </section>
-            </div>
-        </main>
-    </div>
-
-    <!-- JavaScript principale -->
-    <script src="scripts.js"></script>
 </body>
 </html>
