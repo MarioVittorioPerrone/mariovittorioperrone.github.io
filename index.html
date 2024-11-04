@@ -8,15 +8,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css">
     <!-- Chart.js library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- PapaParse per leggere CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
         body {
             background-color: #121212;
             color: white; /* Testo bianco per la dark mode */
             font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .container {
-            width: 90%;
+            width: 100%;
+            padding: 0 10px;
             margin: auto;
         }
 
@@ -46,14 +51,16 @@
 
         .chart-container {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
         }
 
         .chart-box {
-            width: 100%;
-            max-width: 600px;
-            margin: 20px auto;
+            width: 90%;
+            max-width: 500px; /* Limita la larghezza massima dei grafici */
+            margin: 10px;
             background-color: #1f1f1f;
             padding: 20px;
             border-radius: 10px;
@@ -61,13 +68,14 @@
         }
 
         canvas {
-            max-width: 100%;
-            height: auto;
+            width: 100% !important;
+            height: 250px !important; /* Altezza fissa per i grafici per evitare che siano troppo grandi */
         }
 
         #playerInputs {
             margin-top: 20px;
             margin-bottom: 20px;
+            text-align: center;
         }
 
         #addPlayerButton {
@@ -78,6 +86,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
         }
 
         #playerSearch {
@@ -111,7 +120,11 @@
         @media (max-width: 768px) {
             .chart-box {
                 width: 100%;
-                margin: 10px auto;
+                margin: 10px 0;
+            }
+
+            canvas {
+                height: 200px !important; /* Altezza più piccola sui dispositivi mobili */
             }
         }
     </style>
@@ -174,16 +187,33 @@
 
     <!-- Script per gestire i grafici e i dati -->
     <script>
-        const playersData = {
-            "Mateo Retegui": { goal: 11, assist: 3, tiri: 45, dribbling: 18, passaggi: 42, tackle: 12 },
-            "Marcus Thuram": { goal: 10, assist: 7, tiri: 39, dribbling: 22, passaggi: 40, tackle: 10 },
-            "Ademola Lookman": { goal: 8, assist: 6, tiri: 38, dribbling: 25, passaggi: 38, tackle: 15 },
-            "Dusan Vlahovic": { goal: 9, assist: 4, tiri: 42, dribbling: 19, passaggi: 36, tackle: 8 },
-            "Lautaro Martinez": { goal: 10, assist: 5, tiri: 40, dribbling: 23, passaggi: 37, tackle: 11 }
-        };
-
-        const maxPlayers = 5;
         let playerCount = 0;
+        const maxPlayers = 5;
+        let playerData = {};
+
+        // Funzione per leggere il file CSV
+        function loadCSVData() {
+            Papa.parse('/mnt/data/player_stats_24-25_complete.csv', {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    playerData = results.data.reduce((acc, player) => {
+                        acc[player.Nome] = {
+                            goal: parseInt(player.Goal) || 0,
+                            assist: parseInt(player.Assist) || 0,
+                            tiri: parseInt(player.Tiri) || 0,
+                            dribbling: parseInt(player['Dribbling Riusciti']) || 0,
+                            passaggi: parseInt(player['Passaggi Riusciti']) || 0,
+                            tackle: parseInt(player.Tackle) || 0
+                        };
+                        return acc;
+                    }, {});
+                }
+            });
+        }
+
+        // Carica i dati CSV al caricamento della pagina
+        document.addEventListener('DOMContentLoaded', loadCSVData);
 
         // Funzione per creare il radar chart
         function createRadarChart(playerData) {
@@ -237,7 +267,7 @@
                 data: {
                     labels: ['Goal', 'Assist', 'Tiri', 'Dribbling Riusciti', 'Passaggi Riusciti', 'Tackle'],
                     datasets: [{
-                        label: 'Curva Apprendimento Giocatore',
+                        label: 'Performance',
                         data: [playerData.goal, playerData.assist, playerData.tiri, playerData.dribbling, playerData.passaggi, playerData.tackle],
                         fill: false,
                         borderColor: 'rgba(255, 99, 132, 1)',
@@ -297,12 +327,12 @@
         // Funzione per aggiungere un nuovo giocatore
         document.getElementById('addPlayerButton').addEventListener('click', () => {
             const playerSearch = document.getElementById('playerSearch').value;
-            if (playersData[playerSearch] && playerCount < maxPlayers) {
-                createRadarChart(playersData[playerSearch]);
-                createLineChart(playersData[playerSearch]);
-                updateStatsTable(playerSearch, playersData[playerSearch]);
+            if (playerData[playerSearch] && playerCount < maxPlayers) {
+                createRadarChart(playerData[playerSearch]);
+                createLineChart(playerData[playerSearch]);
+                updateStatsTable(playerSearch, playerData[playerSearch]);
                 playerCount++;
-            } else if (!playersData[playerSearch]) {
+            } else if (!playerData[playerSearch]) {
                 alert('Giocatore non trovato');
             } else {
                 alert('Hai già aggiunto il numero massimo di giocatori per il confronto');
