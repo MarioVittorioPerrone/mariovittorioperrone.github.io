@@ -44,13 +44,19 @@
             max-width: 400px;
         }
 
+        /* Canvas rimpicciolito e reso responsivo */
         canvas {
             margin-top: 40px;
+            width: 100%;
+            max-width: 350px;
+            height: auto;
         }
 
+        /* Nascondere il messaggio "No Data" inizialmente */
         .no-data {
             text-align: center;
             margin-top: 20px;
+            display: none;
         }
 
         #chart-toggle {
@@ -60,6 +66,22 @@
 
         .toggle-button {
             margin-right: 20px;
+        }
+
+        /* Aggiungere responsività per schermi piccoli */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            canvas {
+                max-width: 100%;
+                margin: 20px 0;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -114,6 +136,10 @@
                 header: true,
                 complete: function(results) {
                     playerData = results.data;
+                },
+                error: function(error) {
+                    document.getElementById('noDataMessage').textContent = "Errore nel caricamento del file CSV.";
+                    document.getElementById('noDataMessage').style.display = 'block';
                 }
             });
         }
@@ -130,6 +156,7 @@
                 datasets: []
             },
             options: {
+                responsive: true,
                 scale: {
                     ticks: { beginAtZero: true }
                 }
@@ -144,6 +171,7 @@
                 datasets: []
             },
             options: {
+                responsive: true,
                 scales: {
                     y: { beginAtZero: true }
                 }
@@ -224,6 +252,7 @@
                 updateCharts(player1Stats, player2Stats);
             } else {
                 document.getElementById('noDataMessage').textContent = "Giocatori non trovati";
+                document.getElementById('noDataMessage').style.display = 'block';
             }
         }
 
