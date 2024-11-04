@@ -127,7 +127,7 @@
         const radarChart = new Chart(radarCtx, {
             type: 'radar',
             data: {
-                labels: ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Falli Subiti', 'Tackle'],
+                labels: ['Goal', 'Assist', 'Tiri Porta', 'Dribbling', 'Falli Subiti', 'Tackle'],
                 datasets: [{
                     label: 'Statistiche Giocatore',
                     data: [0, 0, 0, 0, 0, 0], // dati vuoti all'inizio
@@ -135,7 +135,7 @@
                     borderColor: 'rgba(34, 202, 236, 1)',
                     borderWidth: 1
                 }]
-                labels: ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'],
+                labels: ['Goal', 'Assist', 'Tiri Porta', 'Dribbling', 'Falli Subiti', 'Tackle'],
                 datasets: []
             },
             options: {
@@ -150,7 +150,7 @@
             radarChart.data.datasets[0].data = [
                 parseInt(playerStats['Goal']) || 0, 
                 parseInt(playerStats['Ass']) || 0, 
-                parseInt(playerStats['Tiri']) || 0, 
+                parseInt(playerStats['Tiri Porta']) || 0, 
                 parseInt(playerStats['Dribb Riusciti']) || 0, 
                 parseInt(playerStats['Falli Subiti']) || 0, 
                 parseInt(playerStats['Tackle']) || 0
@@ -158,7 +158,7 @@
         const lineChart = new Chart(lineCtx, {
             type: 'line',
             data: {
-                labels: ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'],
+                labels: ['Goal', 'Assist', 'Tiri Porta', 'Dribbling', 'Falli Subiti', 'Tackle'],
                 datasets: []
             },
             options: {
@@ -169,21 +169,21 @@
         });
         // Funzione per aggiornare i grafici con i dati di due giocatori
         function updateCharts(player1Stats, player2Stats) {
-            const labels = ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'];
+            const labels = ['Goal', 'Assist', 'Tiri Porta', 'Dribbling', 'Falli Subiti', 'Tackle'];
             const player1Data = [
                 parseInt(player1Stats['Goal']) || 0, 
                 parseInt(player1Stats['Ass']) || 0, 
-                parseInt(player1Stats['Tiri']) || 0, 
+                parseInt(player1Stats['Tiri Porta']) || 0, 
                 parseInt(player1Stats['Dribb Riusciti']) || 0, 
-                parseInt(player1Stats['Pass Riusciti']) || 0, 
+                parseInt(player1Stats['Falli Subiti']) || 0, 
                 parseInt(player1Stats['Tackle']) || 0
             ];
             const player2Data = [
                 parseInt(player2Stats['Goal']) || 0, 
                 parseInt(player2Stats['Ass']) || 0, 
-                parseInt(player2Stats['Tiri']) || 0, 
+                parseInt(player2Stats['Tiri Porta']) || 0, 
                 parseInt(player2Stats['Dribb Riusciti']) || 0, 
-                parseInt(player2Stats['Pass Riusciti']) || 0, 
+                parseInt(player2Stats['Falli Subiti']) || 0, 
                 parseInt(player2Stats['Tackle']) || 0
             ];
             // Aggiorna il radar chart
