@@ -4,43 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Statistiche Giocatori Serie A</title>
+
+    <!-- Chart.js per i radar chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- PapaParse per leggere i CSV -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <!-- Material Design Lite per lo stile moderno -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+    <style>
+        /* Personalizzazione del layout per renderlo responsive e moderno */
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+        #search-container {
+            margin: 20px auto;
+            text-align: center;
+        }
+        .mdl-textfield {
+            width: 100%;
+            max-width: 400px;
+        }
+        canvas {
+            margin-top: 40px;
+        }
+        .no-data {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+
 </head>
 <body>
 
-    <h1>Seleziona un Giocatore</h1>
-    <!-- Menu a tendina per scegliere il giocatore -->
-    <select id="playerSelect">
-        <option value="">Seleziona un giocatore</option>
-    </select>
+    <h1>Statistiche Giocatori Serie A</h1>
+
+    <!-- Barra di ricerca per cercare i giocatori -->
+    <div id="search-container">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="playerSearch">
+            <label class="mdl-textfield__label" for="playerSearch">Cerca un giocatore...</label>
+        </div>
+        <button id="searchButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+            Cerca
+        </button>
+    </div>
 
     <!-- Radar chart per visualizzare le statistiche del giocatore -->
-    <canvas id="radarChart" width="400" height="400"></canvas>
+    <canvas id="radarChart" width="400" height="400" style="display:none;"></canvas>
+    <p id="noDataMessage" class="no-data">Cerca un giocatore per visualizzare le statistiche</p>
 
     <script>
         let playerData = [];
 
-        // Funzione per caricare il CSV e popolare il menu a tendina
+        // Funzione per caricare il CSV
         function loadCSV() {
             Papa.parse('/data/player_stats_24-25_complete.csv', {
                 download: true,
                 header: true,
                 complete: function(results) {
                     playerData = results.data;
-                    populatePlayerSelect(playerData);
                 }
-            });
-        }
-
-        // Funzione per popolare il menu a tendina con i nomi dei giocatori
-        function populatePlayerSelect(data) {
-            const playerSelect = document.getElementById('playerSelect');
-            data.forEach(player => {
-                const option = document.createElement('option');
-                option.value = player['Giocatore'];
-                option.text = player['Giocatore'];
-                playerSelect.appendChild(option);
             });
         }
 
@@ -78,14 +110,24 @@
             radarChart.update();
         }
 
-        // Quando viene selezionato un giocatore, aggiorna il grafico
-        document.getElementById('playerSelect').addEventListener('change', function(event) {
-            const selectedPlayer = event.target.value;
-            const playerStats = playerData.find(player => player['Giocatore'] === selectedPlayer);
+        // Funzione per cercare un giocatore
+        function searchPlayer() {
+            const playerName = document.getElementById('playerSearch').value;
+            const playerStats = playerData.find(player => player['Giocatore'].toLowerCase() === playerName.toLowerCase());
+
             if (playerStats) {
+                document.getElementById('radarChart').style.display = 'block';
+                document.getElementById('noDataMessage').style.display = 'none';
                 updateChart(playerStats);
+            } else {
+                document.getElementById('radarChart').style.display = 'none';
+                document.getElementById('noDataMessage').style.display = 'block';
+                document.getElementById('noDataMessage').textContent = 'Giocatore non trovato';
             }
-        });
+        }
+
+        // Aggiunge il listener al pulsante di ricerca
+        document.getElementById('searchButton').addEventListener('click', searchPlayer);
 
         // Carica il CSV al caricamento della pagina
         loadCSV();
