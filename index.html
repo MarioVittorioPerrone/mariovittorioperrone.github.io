@@ -1,4 +1,206 @@
-                options: {
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serie A Stats - Radar & Learning Curve</title>
+    <!-- Material Design CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css">
+    <!-- Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #bb86fc;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #1f1f1f;
+            border-bottom: 1px solid #333;
+        }
+
+        .navbar a {
+            color: #bb86fc;
+            text-decoration: none;
+            padding: 10px 20px;
+        }
+
+        .navbar a:hover {
+            background-color: #333;
+            border-radius: 5px;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .chart-box {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #1f1f1f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #playerInputs {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        #addPlayerButton {
+            margin-left: 10px;
+        }
+
+        .player-selection {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #playerSearch {
+            color: black;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #1f1f1f;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            color: white;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            background-color: #333;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .chart-box {
+                width: 100%;
+                margin: 10px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra di navigazione -->
+    <div class="navbar">
+        <a href="#">Serie A 2024/2025</a>
+        <a href="#">Stats</a>
+        <a href="#">Confronto Giocatori</a>
+    </div>
+
+    <!-- Titolo -->
+    <div class="container">
+        <h1>Analisi Statistiche dei Giocatori di Serie A</h1>
+
+        <!-- Selezione dei giocatori -->
+        <div class="player-selection">
+            <div id="playerInputs">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="playerSearch" placeholder="Cerca Giocatore...">
+                </div>
+            </div>
+            <button id="addPlayerButton" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">Aggiungi Giocatore</button>
+        </div>
+
+        <!-- Contenitori dei grafici -->
+        <div class="chart-container">
+            <div class="chart-box">
+                <h2>Radar Chart</h2>
+                <canvas id="radarChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h2>Curva di Apprendimento</h2>
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabella dei dati -->
+        <div class="table-container">
+            <table id="statsTable">
+                <thead>
+                    <tr>
+                        <th>Giocatore</th>
+                        <th>Goal</th>
+                        <th>Assist</th>
+                        <th>Tiri</th>
+                        <th>Dribbling Riusciti</th>
+                        <th>Passaggi Riusciti</th>
+                        <th>Tackle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- I dati della tabella saranno inseriti dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Script per gestire i grafici e i dati -->
+    <script>
+        const playersData = {
+            "Giocatore 1": { goal: 10, assist: 5, tiri: 40, dribbling: 20, passaggi: 50, tackle: 15 },
+            "Giocatore 2": { goal: 7, assist: 9, tiri: 30, dribbling: 25, passaggi: 55, tackle: 10 },
+            // Altri giocatori...
+        };
+
+        const maxPlayers = 5;
+        let playerCount = 1;
+
+        // Funzione per creare il radar chart
+        function createRadarChart(playerData) {
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Goal', 'Assist', 'Tiri', 'Dribbling Riusciti', 'Passaggi Riusciti', 'Tackle'],
+                    datasets: [{
+                        label: 'Statistiche Giocatore',
+                        data: [playerData.goal, playerData.assist, playerData.tiri, playerData.dribbling, playerData.passaggi, playerData.tackle],
+                        fill: true,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
