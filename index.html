@@ -42,6 +42,8 @@
         .mdl-textfield {
             width: 100%;
             max-width: 400px;
+            display: inline-block;
+            margin: 5px;
         }
 
         /* Canvas rimpicciolito e reso responsivo */
@@ -97,7 +99,7 @@
         </label>
     </div>
 
-    <!-- Barra di ricerca per il confronto di due giocatori -->
+    <!-- Barra di ricerca per il confronto di più giocatori -->
     <div id="search-container">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" type="text" id="playerSearch1">
@@ -107,24 +109,36 @@
             <input class="mdl-textfield__input" type="text" id="playerSearch2">
             <label class="mdl-textfield__label" for="playerSearch2">Giocatore 2...</label>
         </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="playerSearch3">
+            <label class="mdl-textfield__label" for="playerSearch3">Giocatore 3 (opzionale)...</label>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="playerSearch4">
+            <label class="mdl-textfield__label" for="playerSearch4">Giocatore 4 (opzionale)...</label>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="playerSearch5">
+            <label class="mdl-textfield__label" for="playerSearch5">Giocatore 5 (opzionale)...</label>
+        </div>
         <button id="compareButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
             Confronta
         </button>
     </div>
 
-    <!-- Toggle tra radar chart e curva di apprendimento -->
+    <!-- Toggle tra radar chart e curva delle prestazioni -->
     <div id="chart-toggle">
         <button id="radarToggle" class="mdl-button mdl-js-button mdl-button--raised toggle-button">Radar Chart</button>
-        <button id="lineToggle" class="mdl-button mdl-js-button mdl-button--raised toggle-button">Curva di Apprendimento</button>
+        <button id="lineToggle" class="mdl-button mdl-js-button mdl-button--raised toggle-button">Curva delle Prestazioni</button>
     </div>
 
     <!-- Radar chart per visualizzare le statistiche dei giocatori -->
     <canvas id="radarChart" width="400" height="400" style="display:none;"></canvas>
 
-    <!-- Line chart (curva di apprendimento) -->
+    <!-- Line chart (curva delle prestazioni) -->
     <canvas id="lineChart" width="400" height="400" style="display:none;"></canvas>
 
-    <p id="noDataMessage" class="no-data">Cerca due giocatori per confrontare le statistiche</p>
+    <p id="noDataMessage" class="no-data">Cerca almeno un giocatore per visualizzare le statistiche</p>
 
     <script>
         let playerData = [];
@@ -148,11 +162,14 @@
         const radarCtx = document.getElementById('radarChart').getContext('2d');
         const lineCtx = document.getElementById('lineChart').getContext('2d');
 
+        // Statistiche da visualizzare
+        const statsLabels = ['Goal', 'Tiri', 'Tiri Porta', 'Goal Rig', 'Dribb Riusciti', 'Ass', 'Pass Chiave', 'Falli', 'Falli Subiti', 'Pall Rubati'];
+
         // Inizializzazione del radar chart
         const radarChart = new Chart(radarCtx, {
             type: 'radar',
             data: {
-                labels: ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'],
+                labels: statsLabels,
                 datasets: []
             },
             options: {
@@ -167,7 +184,7 @@
         const lineChart = new Chart(lineCtx, {
             type: 'line',
             data: {
-                labels: ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'],
+                labels: statsLabels,
                 datasets: []
             },
             options: {
@@ -178,78 +195,50 @@
             }
         });
 
-        // Funzione per aggiornare i grafici con i dati di due giocatori
-        function updateCharts(player1Stats, player2Stats) {
-            const labels = ['Goal', 'Assist', 'Tiri', 'Dribbling', 'Passaggi Riusciti', 'Tackle'];
-
-            const player1Data = [
-                parseInt(player1Stats['Goal']) || 0, 
-                parseInt(player1Stats['Ass']) || 0, 
-                parseInt(player1Stats['Tiri']) || 0, 
-                parseInt(player1Stats['Dribb Riusciti']) || 0, 
-                parseInt(player1Stats['Pass Riusciti']) || 0, 
-                parseInt(player1Stats['Tackle']) || 0
-            ];
-
-            const player2Data = [
-                parseInt(player2Stats['Goal']) || 0, 
-                parseInt(player2Stats['Ass']) || 0, 
-                parseInt(player2Stats['Tiri']) || 0, 
-                parseInt(player2Stats['Dribb Riusciti']) || 0, 
-                parseInt(player2Stats['Pass Riusciti']) || 0, 
-                parseInt(player2Stats['Tackle']) || 0
-            ];
+        // Funzione per aggiornare i grafici con i dati dei giocatori
+        function updateCharts(playersStats) {
+            const datasets = playersStats.map((playerStats, index) => ({
+                label: playerStats['Giocatore'],
+                data: statsLabels.map(stat => parseInt(playerStats[stat]) || 0),
+                backgroundColor: `rgba(${index * 50}, ${index * 100}, 236, 0.2)`,
+                borderColor: `rgba(${index * 50}, ${index * 100}, 236, 1)`,
+                borderWidth: 1
+            }));
 
             // Aggiorna il radar chart
-            radarChart.data.datasets = [
-                {
-                    label: player1Stats['Giocatore'],
-                    data: player1Data,
-                    backgroundColor: 'rgba(34, 202, 236, 0.2)',
-                    borderColor: 'rgba(34, 202, 236, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: player2Stats['Giocatore'],
-                    data: player2Data,
-                    backgroundColor: 'rgba(236, 34, 34, 0.2)',
-                    borderColor: 'rgba(236, 34, 34, 1)',
-                    borderWidth: 1
-                }
-            ];
+            radarChart.data.datasets = datasets;
             radarChart.update();
 
             // Aggiorna il line chart
-            lineChart.data.datasets = [
-                {
-                    label: player1Stats['Giocatore'],
-                    data: player1Data,
-                    borderColor: 'rgba(34, 202, 236, 1)',
-                    fill: false
-                },
-                {
-                    label: player2Stats['Giocatore'],
-                    data: player2Data,
-                    borderColor: 'rgba(236, 34, 34, 1)',
-                    fill: false
-                }
-            ];
+            lineChart.data.datasets = datasets;
             lineChart.update();
         }
 
         // Funzione per cercare i giocatori
         function searchPlayers() {
-            const playerName1 = document.getElementById('playerSearch1').value;
-            const playerName2 = document.getElementById('playerSearch2').value;
+            const playerNames = [
+                document.getElementById('playerSearch1').value,
+                document.getElementById('playerSearch2').value,
+                document.getElementById('playerSearch3').value,
+                document.getElementById('playerSearch4').value,
+                document.getElementById('playerSearch5').value
+            ].filter(Boolean); // Filtra i campi vuoti
 
-            const player1Stats = playerData.find(player => player['Giocatore'].toLowerCase() === playerName1.toLowerCase());
-            const player2Stats = playerData.find(player => player['Giocatore'].toLowerCase() === playerName2.toLowerCase());
+            if (playerNames.length < 1) {
+                document.getElementById('noDataMessage').textContent = "Cerca almeno un giocatore per visualizzare le statistiche";
+                document.getElementById('noDataMessage').style.display = 'block';
+                return;
+            }
 
-            if (player1Stats && player2Stats) {
+            const playersStats = playerNames.map(playerName =>
+                playerData.find(player => player['Giocatore'].toLowerCase() === playerName.toLowerCase())
+            ).filter(Boolean);
+
+            if (playersStats.length > 0) {
                 document.getElementById('noDataMessage').style.display = 'none';
                 document.getElementById('radarChart').style.display = 'block';
                 document.getElementById('lineChart').style.display = 'none';
-                updateCharts(player1Stats, player2Stats);
+                updateCharts(playersStats);
             } else {
                 document.getElementById('noDataMessage').textContent = "Giocatori non trovati";
                 document.getElementById('noDataMessage').style.display = 'block';
@@ -263,6 +252,15 @@
 
         // Event listener per il pulsante "Confronta"
         document.getElementById('compareButton').addEventListener('click', searchPlayers);
+
+        // Event listener per attivare la ricerca anche premendo invio
+        document.querySelectorAll('.mdl-textfield__input').forEach(input => {
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    searchPlayers();
+                }
+            });
+        });
 
         // Event listener per il toggle dei grafici
         document.getElementById('radarToggle').addEventListener('click', function() {
