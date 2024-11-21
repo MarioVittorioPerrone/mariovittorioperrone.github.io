@@ -5,12 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soccer Stats Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+    <style>
+        body {
+            background-color: #1c1c1e;
+            color: #ffffff;
+        }
+        .card {
+            background-color: #242526;
+            color: #ffffff;
+            border: none;
+        }
+        .card-header {
+            background-color: #1c1c1e;
+            font-weight: bold;
+        }
+        .navbar {
+            background-color: #242526;
+        }
+        .navbar-brand, .nav-link {
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Soccer Stats Dashboard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -49,28 +69,6 @@
             </div>
         </section>
 
-        <!-- H2H Section -->
-        <section id="h2h" class="content-section" style="display: none;">
-            <div class="card mb-4">
-                <div class="card-header">Confronto Diretto (H2H)</div>
-                <div class="card-body">
-                    <p>Confronta squadre o giocatori con visualizzazioni interattive.</p>
-                    <button class="btn btn-primary">Inizia Confronto</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Advanced Visualizations Section -->
-        <section id="advanced-visuals" class="content-section" style="display: none;">
-            <div class="card mb-4">
-                <div class="card-header">Visualizzazioni Avanzate</div>
-                <div class="card-body">
-                    <p>Scopri heatmap, radar chart e altro ancora.</p>
-                    <button class="btn btn-primary">Esplora</button>
-                </div>
-            </div>
-        </section>
-
         <!-- Chart Output -->
         <section id="charts" class="mt-4">
             <div id="chart-container" class="mt-4">
@@ -81,6 +79,7 @@
     </div>
 
     <script>
+        // Funzione per mostrare sezioni specifiche
         function showSection(sectionId) {
             document.querySelectorAll('.content-section').forEach(section => {
                 section.style.display = 'none';
@@ -88,10 +87,36 @@
             document.getElementById(sectionId).style.display = 'block';
         }
 
+        // Funzione per generare un grafico
         function generateChart() {
-            let stat = document.getElementById("stat-select").value;
+            const stat = document.getElementById("stat-select").value;
+
+            // Esegui il codice Python tramite PyScript
             pyscript.runPython(`
-                from methods import generate_chart
+                import pandas as pd
+                import matplotlib.pyplot as plt
+                from js import document
+
+                # Carica i dataset
+                df_teams = pd.read_csv("teams.csv")
+
+                def generate_chart(stat):
+                    # Filtra i dati per Top 3
+                    top_3 = df_teams[["team_name", stat]].sort_values(by=stat, ascending=False).head(3)
+
+                    # Crea il grafico
+                    plt.figure(figsize=(8, 5))
+                    plt.barh(top_3["team_name"], top_3[stat], color=["#1f77b4", "#ff7f0e", "#2ca02c"])
+                    plt.title(f"Top 3 Teams by {stat}")
+                    plt.xlabel(stat)
+                    plt.ylabel("Teams")
+
+                    # Salva e mostra il grafico
+                    chart_output = document.getElementById("chart-output")
+                    plt.savefig("/tmp/chart.png")
+                    chart_output.innerHTML = '<img src="/tmp/chart.png" alt="Grafico">'
+                    plt.close()
+
                 generate_chart("${stat}")
             `);
         }
