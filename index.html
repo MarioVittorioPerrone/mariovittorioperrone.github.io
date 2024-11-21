@@ -19,13 +19,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="#general-stats">Statistiche Generali</a>
+                        <a class="nav-link active" href="#general-stats" onclick="showSection('general-stats')">Statistiche Generali</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#h2h">Confronto Diretto</a>
+                        <a class="nav-link" href="#h2h" onclick="showSection('h2h')">Confronto Diretto</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#advanced-visuals">Visualizzazioni Avanzate</a>
+                        <a class="nav-link" href="#advanced-visuals" onclick="showSection('advanced-visuals')">Visualizzazioni Avanzate</a>
                     </li>
                 </ul>
             </div>
@@ -34,7 +34,7 @@
 
     <div class="container mt-4">
         <!-- General Stats Section -->
-        <section id="general-stats">
+        <section id="general-stats" class="content-section">
             <div class="card mb-4">
                 <div class="card-header">Statistiche Generali</div>
                 <div class="card-body">
@@ -49,8 +49,30 @@
             </div>
         </section>
 
+        <!-- H2H Section -->
+        <section id="h2h" class="content-section" style="display: none;">
+            <div class="card mb-4">
+                <div class="card-header">Confronto Diretto (H2H)</div>
+                <div class="card-body">
+                    <p>Confronta squadre o giocatori con visualizzazioni interattive.</p>
+                    <button class="btn btn-primary">Inizia Confronto</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advanced Visualizations Section -->
+        <section id="advanced-visuals" class="content-section" style="display: none;">
+            <div class="card mb-4">
+                <div class="card-header">Visualizzazioni Avanzate</div>
+                <div class="card-body">
+                    <p>Scopri heatmap, radar chart e altro ancora.</p>
+                    <button class="btn btn-primary">Esplora</button>
+                </div>
+            </div>
+        </section>
+
         <!-- Chart Output -->
-        <section id="charts">
+        <section id="charts" class="mt-4">
             <div id="chart-container" class="mt-4">
                 <h3>Grafico Generato</h3>
                 <div id="chart-output"></div>
@@ -59,9 +81,15 @@
     </div>
 
     <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
         function generateChart() {
             let stat = document.getElementById("stat-select").value;
-            // Call PyScript to generate the chart (Python logic will handle this)
             pyscript.runPython(`
                 from methods import generate_chart
                 generate_chart("${stat}")
