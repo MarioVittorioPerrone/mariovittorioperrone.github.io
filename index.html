@@ -69,6 +69,28 @@
             </div>
         </section>
 
+        <!-- H2H Section -->
+        <section id="h2h" class="content-section" style="display: none;">
+            <div class="card mb-4">
+                <div class="card-header">Confronto Diretto (H2H)</div>
+                <div class="card-body">
+                    <p>Confronta due squadre o due giocatori selezionati.</p>
+                    <button class="btn btn-primary">Prossimamente</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advanced Visualizations Section -->
+        <section id="advanced-visuals" class="content-section" style="display: none;">
+            <div class="card mb-4">
+                <div class="card-header">Visualizzazioni Avanzate</div>
+                <div class="card-body">
+                    <p>Scopri grafici interattivi come Radar Chart e Heatmap.</p>
+                    <button class="btn btn-primary">Prossimamente</button>
+                </div>
+            </div>
+        </section>
+
         <!-- Chart Output -->
         <section id="charts" class="mt-4">
             <div id="chart-container" class="mt-4">
@@ -79,7 +101,6 @@
     </div>
 
     <script>
-        // Funzione per mostrare sezioni specifiche
         function showSection(sectionId) {
             document.querySelectorAll('.content-section').forEach(section => {
                 section.style.display = 'none';
@@ -87,31 +108,30 @@
             document.getElementById(sectionId).style.display = 'block';
         }
 
-        // Funzione per generare un grafico
         function generateChart() {
             const stat = document.getElementById("stat-select").value;
 
-            // Esegui il codice Python tramite PyScript
+            // PyScript integrato
             pyscript.runPython(`
                 import pandas as pd
                 import matplotlib.pyplot as plt
                 from js import document
 
-                # Carica i dataset
+                # Carica dataset
                 df_teams = pd.read_csv("teams.csv")
 
                 def generate_chart(stat):
-                    # Filtra i dati per Top 3
+                    # Top 3 squadre per statistica
                     top_3 = df_teams[["team_name", stat]].sort_values(by=stat, ascending=False).head(3)
 
-                    # Crea il grafico
+                    # Genera grafico
                     plt.figure(figsize=(8, 5))
                     plt.barh(top_3["team_name"], top_3[stat], color=["#1f77b4", "#ff7f0e", "#2ca02c"])
                     plt.title(f"Top 3 Teams by {stat}")
                     plt.xlabel(stat)
                     plt.ylabel("Teams")
 
-                    # Salva e mostra il grafico
+                    # Mostra grafico
                     chart_output = document.getElementById("chart-output")
                     plt.savefig("/tmp/chart.png")
                     chart_output.innerHTML = '<img src="/tmp/chart.png" alt="Grafico">'
