@@ -1,282 +1,117 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statistiche Giocatori Serie A</title>
-
-    <!-- Chart.js per i radar chart e grafici a linea -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- PapaParse per leggere i CSV -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <!-- Material Design Lite per lo stile moderno -->
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-
+    <title>Soccer Stats Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <style>
-        /* Dark Mode */
         body {
-            font-family: 'Roboto', sans-serif;
+            background-color: #1c1c1e;
+            color: #d1d1d6;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .navbar {
+            background-color: #242526;
+        }
+
+        .navbar-brand, .nav-link {
+            color: #32ff7e !important;
+        }
+
+        .card {
+            background-color: #242526;
+            border: none;
+        }
+
+        .card-header {
+            background-color: #1c1c1e;
+            border-bottom: 1px solid #3a3a3c;
+            color: #32ff7e;
+        }
+
+        .btn-primary {
+            background-color: #0a84ff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #007aff;
+        }
+
+        .chart-container {
+            background-color: #1c1c1e;
             padding: 20px;
-            max-width: 900px;
-            margin: auto;
-            background-color: #121212;
-            color: white;
-        }
-
-        .light-mode {
-            background-color: white;
-            color: black;
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 24px;
-        }
-
-        #search-container {
-            margin: 20px auto;
-            text-align: center;
-        }
-
-        .mdl-textfield {
-            width: 100%;
-            max-width: 400px;
-            display: inline-block;
-            margin: 5px;
-        }
-
-        /* Canvas rimpicciolito e reso responsivo */
-        canvas {
-            margin-top: 40px;
-            width: 100%;
-            max-width: 350px;
-            height: auto;
-        }
-
-        /* Nascondere il messaggio "No Data" inizialmente */
-        .no-data {
-            text-align: center;
+            border-radius: 8px;
             margin-top: 20px;
-            display: none;
-        }
-
-        #chart-toggle {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .toggle-button {
-            margin-right: 20px;
-        }
-
-        /* Aggiungere responsività per schermi piccoli */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-
-            canvas {
-                max-width: 100%;
-                margin: 20px 0;
-            }
-
-            h1 {
-                font-size: 20px;
-            }
         }
     </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Soccer Stats Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#general-stats">Statistiche Generali</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#h2h">Confronto Diretto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#advanced-visuals">Visualizzazioni Avanzate</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <h1>Statistiche Giocatori Serie A</h1>
+    <div class="container mt-4">
+        <!-- General Stats Section -->
+        <section id="general-stats">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Statistiche Generali
+                </div>
+                <div class="card-body">
+                    <p>Genera le Top 3 squadre o giocatori per statistiche selezionate.</p>
+                    <button class="btn btn-primary">Visualizza</button>
+                </div>
+            </div>
+        </section>
 
-    <!-- Dark mode switch -->
-    <div style="text-align: right;">
-        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="darkModeSwitch">
-            <input type="checkbox" id="darkModeSwitch" class="mdl-switch__input" checked>
-            <span class="mdl-switch__label">Dark Mode</span>
-        </label>
+        <!-- H2H Section -->
+        <section id="h2h">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Confronto Diretto (H2H)
+                </div>
+                <div class="card-body">
+                    <p>Confronta squadre o giocatori con visualizzazioni interattive.</p>
+                    <button class="btn btn-primary">Inizia Confronto</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Advanced Visualizations Section -->
+        <section id="advanced-visuals">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Visualizzazioni Avanzate
+                </div>
+                <div class="card-body">
+                    <p>Scopri heatmap, radar chart e altro ancora.</p>
+                    <button class="btn btn-primary">Esplora</button>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <!-- Barra di ricerca per il confronto di più giocatori -->
-    <div id="search-container">
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="playerSearch1">
-            <label class="mdl-textfield__label" for="playerSearch1">Giocatore 1...</label>
-        </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="playerSearch2">
-            <label class="mdl-textfield__label" for="playerSearch2">Giocatore 2...</label>
-        </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="playerSearch3">
-            <label class="mdl-textfield__label" for="playerSearch3">Giocatore 3 (opzionale)...</label>
-        </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="playerSearch4">
-            <label class="mdl-textfield__label" for="playerSearch4">Giocatore 4 (opzionale)...</label>
-        </div>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="playerSearch5">
-            <label class="mdl-textfield__label" for="playerSearch5">Giocatore 5 (opzionale)...</label>
-        </div>
-        <button id="compareButton" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
-            Confronta
-        </button>
-    </div>
-
-    <!-- Toggle tra radar chart e curva delle prestazioni -->
-    <div id="chart-toggle">
-        <button id="radarToggle" class="mdl-button mdl-js-button mdl-button--raised toggle-button">Radar Chart</button>
-        <button id="lineToggle" class="mdl-button mdl-js-button mdl-button--raised toggle-button">Curva delle Prestazioni</button>
-    </div>
-
-    <!-- Radar chart per visualizzare le statistiche dei giocatori -->
-    <canvas id="radarChart" width="400" height="400" style="display:none;"></canvas>
-
-    <!-- Line chart (curva delle prestazioni) -->
-    <canvas id="lineChart" width="400" height="400" style="display:none;"></canvas>
-
-    <p id="noDataMessage" class="no-data">Cerca almeno un giocatore per visualizzare le statistiche</p>
-
-    <script>
-        let playerData = [];
-
-        // Funzione per caricare il CSV
-        function loadCSV() {
-            Papa.parse('/data/player_stats_24-25_complete.csv', {
-                download: true,
-                header: true,
-                complete: function(results) {
-                    playerData = results.data;
-                },
-                error: function(error) {
-                    document.getElementById('noDataMessage').textContent = "Errore nel caricamento del file CSV.";
-                    document.getElementById('noDataMessage').style.display = 'block';
-                }
-            });
-        }
-
-        // Radar chart e Line chart context
-        const radarCtx = document.getElementById('radarChart').getContext('2d');
-        const lineCtx = document.getElementById('lineChart').getContext('2d');
-
-        // Statistiche da visualizzare
-        const statsLabels = ['Goal', 'Tiri', 'Tiri Porta', 'Goal Rig', 'Dribb Riusciti', 'Ass', 'Pass Chiave', 'Falli', 'Falli Subiti', 'Pall Rubati'];
-
-        // Inizializzazione del radar chart
-        const radarChart = new Chart(radarCtx, {
-            type: 'radar',
-            data: {
-                labels: statsLabels,
-                datasets: []
-            },
-            options: {
-                responsive: true,
-                scale: {
-                    ticks: { beginAtZero: true }
-                }
-            }
-        });
-
-        // Inizializzazione del line chart
-        const lineChart = new Chart(lineCtx, {
-            type: 'line',
-            data: {
-                labels: statsLabels,
-                datasets: []
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-
-        // Funzione per aggiornare i grafici con i dati dei giocatori
-        function updateCharts(playersStats) {
-            const datasets = playersStats.map((playerStats, index) => ({
-                label: playerStats['Giocatore'],
-                data: statsLabels.map(stat => parseInt(playerStats[stat]) || 0),
-                backgroundColor: `rgba(${index * 50}, ${index * 100}, 236, 0.2)`,
-                borderColor: `rgba(${index * 50}, ${index * 100}, 236, 1)`,
-                borderWidth: 1
-            }));
-
-            // Aggiorna il radar chart
-            radarChart.data.datasets = datasets;
-            radarChart.update();
-
-            // Aggiorna il line chart
-            lineChart.data.datasets = datasets;
-            lineChart.update();
-        }
-
-        // Funzione per cercare i giocatori
-        function searchPlayers() {
-            const playerNames = [
-                document.getElementById('playerSearch1').value,
-                document.getElementById('playerSearch2').value,
-                document.getElementById('playerSearch3').value,
-                document.getElementById('playerSearch4').value,
-                document.getElementById('playerSearch5').value
-            ].filter(Boolean); // Filtra i campi vuoti
-
-            if (playerNames.length < 1) {
-                document.getElementById('noDataMessage').textContent = "Cerca almeno un giocatore per visualizzare le statistiche";
-                document.getElementById('noDataMessage').style.display = 'block';
-                return;
-            }
-
-            const playersStats = playerNames.map(playerName =>
-                playerData.find(player => player['Giocatore'].toLowerCase() === playerName.toLowerCase())
-            ).filter(Boolean);
-
-            if (playersStats.length > 0) {
-                document.getElementById('noDataMessage').style.display = 'none';
-                document.getElementById('radarChart').style.display = 'block';
-                document.getElementById('lineChart').style.display = 'none';
-                updateCharts(playersStats);
-            } else {
-                document.getElementById('noDataMessage').textContent = "Giocatori non trovati";
-                document.getElementById('noDataMessage').style.display = 'block';
-            }
-        }
-
-        // Funzione per il toggle della dark mode
-        function toggleDarkMode() {
-            document.body.classList.toggle('light-mode');
-        }
-
-        // Event listener per il pulsante "Confronta"
-        document.getElementById('compareButton').addEventListener('click', searchPlayers);
-
-        // Event listener per attivare la ricerca anche premendo invio
-        document.querySelectorAll('.mdl-textfield__input').forEach(input => {
-            input.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    searchPlayers();
-                }
-            });
-        });
-
-        // Event listener per il toggle dei grafici
-        document.getElementById('radarToggle').addEventListener('click', function() {
-            document.getElementById('radarChart').style.display = 'block';
-            document.getElementById('lineChart').style.display = 'none';
-        });
-        document.getElementById('lineToggle').addEventListener('click', function() {
-            document.getElementById('radarChart').style.display = 'none';
-            document.getElementById('lineChart').style.display = 'block';
-        });
-
-        // Event listener per il dark mode switch
-        document.getElementById('darkModeSwitch').addEventListener('change', toggleDarkMode);
-
-        // Caricamento dei dati CSV
-        loadCSV();
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
