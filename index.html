@@ -5,51 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soccer Stats Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #1c1c1e;
-            color: #ffffff; /* White text */
-            font-family: 'Arial', sans-serif;
-        }
-
-        .navbar {
-            background-color: #242526;
-        }
-
-        .navbar-brand, .nav-link {
-            color: #ffffff !important; /* White text for navbar */
-        }
-
-        .card {
-            background-color: #242526;
-            border: none;
-        }
-
-        .card-header {
-            background-color: #1c1c1e;
-            border-bottom: 1px solid #3a3a3c;
-            color: #ffffff; /* White text */
-        }
-
-        .btn-primary {
-            background-color: #0a84ff;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: #007aff;
-        }
-
-        .chart-container {
-            background-color: #1c1c1e;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Soccer Stats Dashboard</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -75,43 +36,37 @@
         <!-- General Stats Section -->
         <section id="general-stats">
             <div class="card mb-4">
-                <div class="card-header">
-                    Statistiche Generali
-                </div>
+                <div class="card-header">Statistiche Generali</div>
                 <div class="card-body">
-                    <p>Genera le Top 3 squadre o giocatori per statistiche selezionate.</p>
-                    <button class="btn btn-primary">Visualizza</button>
+                    <label for="stat-select">Seleziona Statistica:</label>
+                    <select id="stat-select" class="form-select">
+                        <option value="goals_scored">Goals Scored</option>
+                        <option value="fouls_per_90">Fouls Per 90</option>
+                        <option value="xg_per_90">XG Per 90</option>
+                    </select>
+                    <button class="btn btn-primary mt-3" onclick="generateChart()">Genera Grafico</button>
                 </div>
             </div>
         </section>
 
-        <!-- H2H Section -->
-        <section id="h2h">
-            <div class="card mb-4">
-                <div class="card-header">
-                    Confronto Diretto (H2H)
-                </div>
-                <div class="card-body">
-                    <p>Confronta squadre o giocatori con visualizzazioni interattive.</p>
-                    <button class="btn btn-primary">Inizia Confronto</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Advanced Visualizations Section -->
-        <section id="advanced-visuals">
-            <div class="card mb-4">
-                <div class="card-header">
-                    Visualizzazioni Avanzate
-                </div>
-                <div class="card-body">
-                    <p>Scopri heatmap, radar chart e altro ancora.</p>
-                    <button class="btn btn-primary">Esplora</button>
-                </div>
+        <!-- Chart Output -->
+        <section id="charts">
+            <div id="chart-container" class="mt-4">
+                <h3>Grafico Generato</h3>
+                <div id="chart-output"></div>
             </div>
         </section>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function generateChart() {
+            let stat = document.getElementById("stat-select").value;
+            // Call PyScript to generate the chart (Python logic will handle this)
+            pyscript.runPython(`
+                from methods import generate_chart
+                generate_chart("${stat}")
+            `);
+        }
+    </script>
 </body>
 </html>
